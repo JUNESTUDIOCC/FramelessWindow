@@ -1,7 +1,8 @@
 #include "CMainWindow.h"
 #include <QtWidgets/QApplication>
 #include "CFramelessWindow.h"
-
+#include "ArrowWidget.h"
+#include <QLabel>
 
 int main(int argc, char *argv[])
 {
@@ -11,7 +12,24 @@ int main(int argc, char *argv[])
 	CFramelessWindow w1(w);
 	w1.setGeometry(0, 0, 500, 500);
 
+	w1.SetBackgroundColor(Qt::white);
+
 	w1.show();
+
+	CMainWindow x;
+	x.show();
+
+
+	QLabel* textLabel = new QLabel;
+	textLabel->setAlignment(Qt::AlignCenter);
+	textLabel->setText("ArrowWidget");
+
+	ArrowWidget w2;
+	w2.setStartPos(60);
+	w2.setTriangleInfo(20, 12);
+	w2.setFixedSize(QSize(150, 80));
+	w2.setCenterWidget(textLabel);
+	w2.show();
 
 	return a.exec();
 }
