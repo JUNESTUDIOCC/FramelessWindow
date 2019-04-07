@@ -1,6 +1,7 @@
 #include "CPopupWidget.h"
 #include <QPainter>
 #include <QCoreApplication>
+#include <QVBoxLayout>
 
 #define TRIANGLE_WIDTH  10               // 小三角的宽度;
 #define TRIANGLE_HEIGHT 15               // 小三角的高度;
@@ -13,6 +14,9 @@ m_top(50)
 	setWindowFlags(windowFlags() | Qt::Window);
 	SetDragEnabled(false);
 	SetResizeEnabled(false);
+
+	m_animation = new QPropertyAnimation(this, "windowOpacity");
+	m_animation->setDuration(300);
 }
 
 CPopupWidget::~CPopupWidget()
@@ -20,31 +24,46 @@ CPopupWidget::~CPopupWidget()
 
 }
 
-void CPopupWidget::SetArrowDirection(ArrowDirection arrowDirction)
+void CPopupWidget::SetCentralWidget(QWidget* w)
+{
+	layout()->addWidget(w);
+}
+
+void CPopupWidget::SetDirection(ArrowDirection arrowDirction)
 {
 	m_arrowDirction = arrowDirction;
 }
 
 void CPopupWidget::Show(int x, int y)
 {
+	m_animation->setStartValue(0.0);
+	m_animation->setEndValue(windowOpacity());
+	m_animation->start();
+
 	int arrowX, arrowY;
+	QLayout* pLayout = layout();
+	int margin = GetBlurRadius() + GetWidgetRadius();
 	switch (m_arrowDirction)
 	{
 	case AD_UP:
 		arrowX = x - m_top;
 		arrowY = y-GetBlurRadius();
+		pLayout->setContentsMargins(margin, margin + TRIANGLE_HEIGHT, margin, margin);
 		break;
 	case AD_DOWN:
 		arrowX = x - width() + m_top;
 		arrowY = y - height() + GetBlurRadius();
+		pLayout->setContentsMargins(margin, margin, margin, margin + TRIANGLE_HEIGHT);
 		break;
 	case AD_LEFT:
 		arrowX = x - GetBlurRadius();
 		arrowY = y -height()+ m_top;
+		pLayout->setContentsMargins(margin + TRIANGLE_HEIGHT, margin, margin, margin);
 		break;
 	case AD_RIGHT:
 		arrowX = x - width()+GetBlurRadius();
 		arrowY = y - m_top;
+		pLayout->setContentsMargins(margin, margin, margin + TRIANGLE_HEIGHT, margin);
 		break;
 	}
 	move(arrowX, arrowY);
@@ -132,7 +151,6 @@ void CPopupWidget::paintEvent(QPaintEvent *event)
 		break;
 	}
 	painter.drawPath(drawPath);
-
 }
 
 bool CPopupWidget::event(QEvent* e)

@@ -2,10 +2,11 @@
 #define CPopupWidget_H
 #include <QWidget>
 #include "CFramelessWindow.h"
-
+#include <QPropertyAnimation>
 
 class CPopupWidget : public CFramelessWindow
 {
+	Q_OBJECT
 public:
 	enum ArrowDirection
 	{
@@ -19,7 +20,9 @@ public:
 
 	~CPopupWidget();
 
-	void SetArrowDirection(ArrowDirection arrowDirction);
+	void SetCentralWidget(QWidget* w);
+
+	void SetDirection(ArrowDirection arrowDirction);
 
 	void Show(int x, int y);
 
@@ -32,10 +35,10 @@ public:
 protected:
 	void paintEvent(QPaintEvent *event);
 	bool event(QEvent* e);
-
 private:
 	ArrowDirection			m_arrowDirction;
 	int						m_top;
+	QPropertyAnimation*		m_animation;
 };
 
 

@@ -3,6 +3,9 @@
 #include "CFramelessWindow.h"
 #include "ArrowWidget.h"
 #include "CPopupWidget.h"
+#include "CSideTab.h"
+#include <QPushButton>
+#include <QLayout>
 #include <QLabel>
 
 int main(int argc, char *argv[])
@@ -10,13 +13,12 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 
 	QWidget* w = new QWidget();
-	CFramelessWindow w1(0);
-	w1.move(200, 200);
+	CPopupWidget w1(0);
 	w1.resize(500, 500);
-
-	w1.SetBackgroundColor(QColor(225,225,122,150));
-
-	//w1.show();
+	w1.setWindowOpacity(0.5);
+	w1.layout()->addWidget(new QPushButton(&w1));
+	w1.SetBackgroundColor(QColor(225,225,122));
+	//w1.Show(500, 500);
 
 	CMainWindow x;
 	x.show();
@@ -33,7 +35,8 @@ int main(int argc, char *argv[])
 	//w2.setCenterWidget(textLabel);
 	//w2.show();
 
-
+	//CSideTab* p = new CSideTab(0);
+	//p->showMaximized();
 
 
 	return a.exec();

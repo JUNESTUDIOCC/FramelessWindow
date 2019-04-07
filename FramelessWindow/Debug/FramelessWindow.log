@@ -1,21 +1,28 @@
-﻿生成启动时间为 2019/4/7 10:51:34。
+﻿生成启动时间为 2019/4/7 22:35:28。
      1>项目“D:\Projects\FramelessWindow\FramelessWindow\FramelessWindow.vcxproj”在节点 2 上(Build 个目标)。
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I.\GeneratedFiles /I. /IC:\Qt\Qt5.7.0\5.7\msvc2013\include /I.\GeneratedFiles\Debug /IC:\Qt\Qt5.7.0\5.7\msvc2013\include\QtCore /IC:\Qt\Qt5.7.0\5.7\msvc2013\include\QtGui /IC:\Qt\Qt5.7.0\5.7\msvc2013\include\QtANGLE /IC:\Qt\Qt5.7.0\5.7\msvc2013\include\QtWidgets /I"D:\Program Files (x86)\Visual Leak Detector\include" /Zi /nologo /W1 /WX- /MP /Od /Oy- /D UNICODE /D WIN32 /D WIN64 /D QT_DLL /D QT_CORE_LIB /D QT_GUI_LIB /D QT_WIDGETS_LIB /Gm- /EHsc /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt CMainWindow.cpp
          CMainWindow.cpp
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\Projects\FramelessWindow\Win32\Debug\\FramelessWindow.exe" /NOLOGO /LIBPATH:C:\Qt\Qt5.7.0\5.7\msvc2013\lib /LIBPATH:"D:\Program Files (x86)\Visual Leak Detector\lib\Win32" qtmaind.lib Qt5Cored.lib Qt5Guid.lib Qt5Widgetsd.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\Projects\FramelessWindow\Win32\Debug\FramelessWindow.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\Projects\FramelessWindow\Win32\Debug\FramelessWindow.lib" /MACHINE:X86 /SAFESEH Debug\ArrowWidget.obj
+         Debug\CArrowPushButton.obj
          Debug\CFramelessWindow.obj
          Debug\CMainWindow.obj
          Debug\CPopupWidget.obj
+         Debug\CSideTab.obj
+         Debug\CSideTabWidget.obj
          Debug\main.obj
          Debug\moc_CMainWindow.obj
          Debug\moc_CFramelessWindow.obj
+         Debug\moc_CSideTab.obj
+         Debug\moc_CArrowPushButton.obj
+         Debug\moc_CSideTabWidget.obj
          Debug\moc_ArrowWidget.obj
+         Debug\moc_CPopupWidget.obj
          Debug\qrc_CMainWindow.obj
          FramelessWindow.vcxproj -> D:\Projects\FramelessWindow\Win32\Debug\FramelessWindow.exe
      1>已完成生成项目“D:\Projects\FramelessWindow\FramelessWindow\FramelessWindow.vcxproj”(Build 个目标)的操作。
 
 生成成功。
 
-已用时间 00:00:01.50
+已用时间 00:00:01.52

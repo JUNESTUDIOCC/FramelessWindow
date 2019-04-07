@@ -13,7 +13,9 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QCalendarWidget>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QLCDNumber>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QWidget>
@@ -25,17 +27,25 @@ class Ui_CMainWindowClass
 public:
     QWidget *centralWidget;
     QPushButton *pushButton;
+    QLCDNumber *lcdNumber;
+    QCalendarWidget *calendarWidget;
 
     void setupUi(QMainWindow *CMainWindowClass)
     {
         if (CMainWindowClass->objectName().isEmpty())
             CMainWindowClass->setObjectName(QStringLiteral("CMainWindowClass"));
-        CMainWindowClass->resize(869, 455);
+        CMainWindowClass->resize(959, 524);
         centralWidget = new QWidget(CMainWindowClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         pushButton = new QPushButton(centralWidget);
         pushButton->setObjectName(QStringLiteral("pushButton"));
-        pushButton->setGeometry(QRect(330, 200, 75, 23));
+        pushButton->setGeometry(QRect(30, 10, 75, 23));
+        lcdNumber = new QLCDNumber(centralWidget);
+        lcdNumber->setObjectName(QStringLiteral("lcdNumber"));
+        lcdNumber->setGeometry(QRect(650, 230, 64, 23));
+        calendarWidget = new QCalendarWidget(centralWidget);
+        calendarWidget->setObjectName(QStringLiteral("calendarWidget"));
+        calendarWidget->setGeometry(QRect(610, 70, 248, 197));
         CMainWindowClass->setCentralWidget(centralWidget);
 
         retranslateUi(CMainWindowClass);
