@@ -2,6 +2,7 @@
 #include <QtWidgets/QApplication>
 #include "CFramelessWindow.h"
 #include "ArrowWidget.h"
+#include "CPopupWidget.h"
 #include <QLabel>
 
 int main(int argc, char *argv[])
@@ -9,12 +10,13 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 
 	QWidget* w = new QWidget();
-	CFramelessWindow w1(w);
-	w1.setGeometry(0, 0, 500, 500);
+	CFramelessWindow w1(0);
+	w1.move(200, 200);
+	w1.resize(500, 500);
 
-	w1.SetBackgroundColor(Qt::white);
+	w1.SetBackgroundColor(QColor(225,225,122,150));
 
-	w1.show();
+	//w1.show();
 
 	CMainWindow x;
 	x.show();
@@ -28,8 +30,11 @@ int main(int argc, char *argv[])
 	w2.setStartPos(60);
 	w2.setTriangleInfo(20, 12);
 	w2.setFixedSize(QSize(150, 80));
-	w2.setCenterWidget(textLabel);
-	w2.show();
+	//w2.setCenterWidget(textLabel);
+	//w2.show();
+
+
+
 
 	return a.exec();
 }

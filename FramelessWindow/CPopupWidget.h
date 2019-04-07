@@ -3,21 +3,39 @@
 #include <QWidget>
 #include "CFramelessWindow.h"
 
-class CPopupWidgetPrivate;
-
 
 class CPopupWidget : public CFramelessWindow
 {
 public:
-	CPopupWidget(QWidget* content,QWidget* parent = 0);
+	enum ArrowDirection
+	{
+		AD_UP,
+		AD_DOWN,
+		AD_LEFT,
+		AD_RIGHT
+	};
+public:
+	CPopupWidget(QWidget* parent = 0);
+
 	~CPopupWidget();
 
+	void SetArrowDirection(ArrowDirection arrowDirction);
+
+	void Show(int x, int y);
+
+	void Show(const QPoint& pt);
+
+	void SetTop(int top);
+
+	void Resize(int w,int h);
 
 protected:
 	void paintEvent(QPaintEvent *event);
+	bool event(QEvent* e);
 
 private:
-	CPopupWidgetPrivate*	m_d;
+	ArrowDirection			m_arrowDirction;
+	int						m_top;
 };
 
 

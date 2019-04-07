@@ -2,8 +2,9 @@
 #include <QGraphicsDropShadowEffect>
 #include <QVBoxLayout>
 #include <QMouseEvent>
+#include <QPainter>
 
-#define HANLE_WIDTH		20
+#define HANLE_WIDTH		10
 
 enum PosType
 {
@@ -21,9 +22,8 @@ enum PosType
 
 struct CFramelessWindowPrivate
 {
-	CFramelessWindowPrivate(QWidget* contentWidget)
-	:m_contentWidget(contentWidget),
-	m_blurRadius(12),
+	CFramelessWindowPrivate()
+	:m_blurRadius(12),
 	m_widgetRadius(5),
 	m_backgroundColor(Qt::white),
 	m_shadowColor(Qt::black),
@@ -33,7 +33,6 @@ struct CFramelessWindowPrivate
 	
 	}
 
-	QWidget*	m_contentWidget;
 	QPoint		m_pressedPost;
 	QPoint		m_dragPos;
 	PosType		m_posType;
@@ -45,37 +44,59 @@ struct CFramelessWindowPrivate
 	bool		m_resizeEnabled;
 };
 
-
-CFramelessWindow::CFramelessWindow(QWidget* contentWidget,QWidget* parent/*=0*/)
+CFramelessWindow::CFramelessWindow(QWidget* parent/*=0*/)
 :QWidget(parent),
-m_d(new CFramelessWindowPrivate(contentWidget))
+m_d(new CFramelessWindowPrivate())
 {
-	setAttribute(Qt::WA_StyledBackground, true);
-	setAttribute(Qt::WA_TranslucentBackground, true);
-	setWindowFlags(Qt::FramelessWindowHint);
+	setAttribute(Qt::WA_StyledBackground);
+	setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
+	setAttribute(Qt::WA_TranslucentBackground);
 	setMouseTracking(true);
 
-	contentWidget->setAttribute(Qt::WA_StyledBackground, true);
-	contentWidget->installEventFilter(this);
-	contentWidget->setMouseTracking(true);
-
-	QGraphicsDropShadowEffect* shadowEft = new QGraphicsDropShadowEffect(contentWidget);
+	QGraphicsDropShadowEffect* shadowEft = new QGraphicsDropShadowEffect(this);
+	shadowEft->setOffset(0.0);
 	shadowEft->setColor(m_d->m_shadowColor);
 	shadowEft->setBlurRadius(m_d->m_blurRadius);
-	shadowEft->setOffset(0.0);
-	contentWidget->setGraphicsEffect(shadowEft);
+	setGraphicsEffect(shadowEft);
 
 	QVBoxLayout* ly = new QVBoxLayout();
-	ly->addWidget(contentWidget);
 	ly->setContentsMargins(m_d->m_blurRadius, m_d->m_blurRadius, m_d->m_blurRadius, m_d->m_blurRadius);
 	setLayout(ly);
-
-	contentWidget->setObjectName("CFramelessWindow_contentWidget");
 }
 
 CFramelessWindow::~CFramelessWindow()
 {
 	delete m_d;
+}
+
+int CFramelessWindow::GetBlurRadius()
+{
+	return m_d->m_blurRadius;
+}
+
+int CFramelessWindow::GetWidgetRadius()
+{
+	return m_d->m_widgetRadius;
+}
+
+const QColor& CFramelessWindow::GetShadowColor()
+{
+	return m_d->m_shadowColor;
+}
+
+const QColor& CFramelessWindow::GetBackgroundColor()
+{
+	return m_d->m_backgroundColor;
+}
+
+bool CFramelessWindow::GetDragEnabled()
+{
+	return m_d->m_dragEnabled;
+}
+
+bool CFramelessWindow::GetResizeEnabled()
+{
+	return m_d->m_resizeEnabled;
 }
 
 void CFramelessWindow::SetBlurRadius(int radius)
@@ -86,7 +107,6 @@ void CFramelessWindow::SetBlurRadius(int radius)
 void CFramelessWindow::SetWidgetRadius(int radius)
 {
 	m_d->m_widgetRadius = radius;
-	Update();
 }
 
 void CFramelessWindow::SetShadowColor(const QColor &color)
@@ -98,7 +118,6 @@ void CFramelessWindow::SetShadowColor(const QColor &color)
 void CFramelessWindow::SetBackgroundColor(const QColor &color)
 {
 	m_d->m_backgroundColor = color;
-	Update();
 }
 
 void CFramelessWindow::SetDragEnabled(bool dragEnabled)
@@ -148,8 +167,6 @@ void CFramelessWindow::mouseMoveEvent(QMouseEvent *event)
 		}
 	}
 
-
-
 	if (!m_d->m_pressedPost.isNull())
 	{
 		//ÒÆ¶¯
@@ -165,33 +182,68 @@ void CFramelessWindow::mouseMoveEvent(QMouseEvent *event)
 		{
 			if (m_d->m_resizeEnabled)
 			{
+				QRect tmRc;
 				QRect rc = geometry();
+				
 				QPoint dest = event->globalPos();
+
 				switch (m_d->m_posType)
 				{
 				case PT_LEFT:
-					rc.setLeft(dest.x());
+					rc.setLeft(dest.x()-m_d->m_blurRadius);
+					if (rc.width() < minimumWidth())
+						return;
 					break;
 				case PT_TOP:
-					rc.setTop(dest.y());
+					rc.setTop(dest.y() - m_d->m_blurRadius);
+					if (rc.height() < minimumHeight())
+						return;
 					break;
 				case PT_RIGHT:
-					rc.setRight(dest.x());
+					rc.setRight(dest.x() + m_d->m_blurRadius);
 					break;
 				case PT_BOTTOM:
-					rc.setBottom(dest.y());
+					rc.setBottom(dest.y() + m_d->m_blurRadius);
 					break;
 				case PT_LEFT_TOP:
-					rc.setTopLeft(dest);
+					tmRc = rc;
+					tmRc.setTopLeft(dest - QPoint(m_d->m_blurRadius, m_d->m_blurRadius));
+					if (tmRc.width() >= minimumWidth())
+					{
+						rc.setLeft(dest.x() - m_d->m_blurRadius);
+					}
+					if (tmRc.height() >= minimumHeight())
+					{
+						rc.setTop(dest.y() - m_d->m_blurRadius);
+					}
 					break;
 				case PT_TOP_RIGHT:
-					rc.setTopRight(dest);
+					tmRc = rc;
+					tmRc.setTopRight(dest - QPoint(-m_d->m_blurRadius, m_d->m_blurRadius));
+					if (tmRc.height() >= minimumHeight())
+					{
+						rc.setTop(dest.y() - m_d->m_blurRadius);
+					}
+					rc.setRight(dest.x() + m_d->m_blurRadius);
+
 					break;
 				case PT_RIGHT_BOTTOM:
-					rc.setBottomRight(dest);
+					tmRc = rc;
+					tmRc.setBottomRight(dest + QPoint(m_d->m_blurRadius, m_d->m_blurRadius));
+					if (tmRc.width() >= minimumWidth())
+					{
+						rc.setRight(dest.x() + m_d->m_blurRadius);
+					}
+					rc.setBottom(dest.y() + m_d->m_blurRadius);
 					break;
 				case PT_BOTTOM_LEFT:
-					rc.setBottomLeft(dest);
+					tmRc = rc;
+					tmRc.setBottomLeft(dest - QPoint(m_d->m_blurRadius, -m_d->m_blurRadius));
+					if (tmRc.width() >= minimumWidth())
+					{
+						rc.setLeft(dest.x() - m_d->m_blurRadius);
+					}
+					rc.setBottom(dest.y() + m_d->m_blurRadius);
 					break;
 				default:
 					break;
@@ -207,85 +259,60 @@ void CFramelessWindow::mouseReleaseEvent(QMouseEvent *event)
 	Q_UNUSED(event);
 	m_d->m_pressedPost = QPoint();
 }
-
-bool CFramelessWindow::eventFilter(QObject *watched, QEvent *event)
-{
-	if (watched == m_d->m_contentWidget)
-	{
-		int t = event->type();
-		if (t == QEvent::MouseMove)
-		{
-			QMouseEvent* me = dynamic_cast<QMouseEvent*>(event);
-			if (me)
-			{
-				mouseMoveEvent(me);
-			}
-			return false;
-		}
-		else if (t == QEvent::MouseButtonPress)
-		{
-			QMouseEvent* me = dynamic_cast<QMouseEvent*>(event);
-			if (me)
-			{
-				mousePressEvent(me);
-			}
-			return false;
-		}
-		else if (t == QEvent::MouseButtonRelease)
-		{
-			QMouseEvent* me = dynamic_cast<QMouseEvent*>(event);
-			if (me)
-			{
-				mouseReleaseEvent(me);
-			}
-			return false;
-		}
-		else
-		{
-			return QWidget::eventFilter(watched, event);
-		}
-	}
-	else
-	{
-		return QWidget::eventFilter(watched, event);
-	}
-}
  
+void CFramelessWindow::paintEvent(QPaintEvent *event)
+{
+	QPainter painter(this);
+	painter.setRenderHint(QPainter::Antialiasing, true);
+	painter.setPen(Qt::NoPen);
+	painter.setBrush(m_d->m_backgroundColor);
+
+	int w = this->width()-2*m_d->m_blurRadius;
+	int h = this->height() - 2*m_d->m_blurRadius;
+
+	painter.drawRoundedRect(m_d->m_blurRadius, m_d->m_blurRadius, w, h, m_d->m_widgetRadius, m_d->m_widgetRadius);
+}
+
 int CFramelessWindow::GetPosType(const QPoint& pt)
 {
 	if (!m_d->m_pressedPost.isNull())
 	{
 		return m_d->m_posType;
 	}
-	if (pt.x()<HANLE_WIDTH&&pt.y()>HANLE_WIDTH&&pt.y() < height() - HANLE_WIDTH)
+
+	int leftTop = m_d->m_blurRadius + HANLE_WIDTH;
+	int bottomY = height() - m_d->m_blurRadius - HANLE_WIDTH;
+	int rightX = width() - m_d->m_blurRadius - HANLE_WIDTH;
+	
+	if (pt.x()<leftTop&&pt.y()>leftTop&&pt.y() < bottomY)
 	{
 		return PT_LEFT;
 	}
-	else if (pt.x()>HANLE_WIDTH&&pt.y() < HANLE_WIDTH&&pt.x() < width() - HANLE_WIDTH)
+	else if (pt.x()>leftTop&&pt.y() < leftTop&&pt.x() < rightX)
 	{
 		return PT_TOP;
 	}
-	else if (pt.y()>HANLE_WIDTH&&pt.y()<height() - HANLE_WIDTH&&pt.x()>width() - HANLE_WIDTH)
+	else if (pt.y()>leftTop&&pt.y()<bottomY&&pt.x()>rightX)
 	{
 		return PT_RIGHT;
 	}
-	else if (pt.y()>height() - HANLE_WIDTH&&pt.x() > HANLE_WIDTH&&pt.x() < width() - HANLE_WIDTH)
+	else if (pt.y()>bottomY&&pt.x() > leftTop&&pt.x() < rightX)
 	{
 		return PT_BOTTOM;
 	}
-	else if (pt.x() < HANLE_WIDTH&&pt.y() < HANLE_WIDTH)
+	else if (pt.x() < leftTop&&pt.y() < leftTop)
 	{
 		return PT_LEFT_TOP;
 	}
-	else if (pt.x()>width() - HANLE_WIDTH&&pt.y() < HANLE_WIDTH)
+	else if (pt.x()>rightX&&pt.y() < leftTop)
 	{
 		return PT_TOP_RIGHT;
 	}
-	else if (pt.x()<HANLE_WIDTH&&pt.y()>height() - HANLE_WIDTH)
+	else if (pt.x()<leftTop&&pt.y()>bottomY)
 	{
 		return PT_BOTTOM_LEFT;
 	}
-	else if (pt.x()>width() - HANLE_WIDTH&&pt.y() > height() - HANLE_WIDTH)
+	else if (pt.x()>rightX&&pt.y() > bottomY)
 	{
 		return PT_RIGHT_BOTTOM;
 	}
@@ -295,13 +322,3 @@ int CFramelessWindow::GetPosType(const QPoint& pt)
 	}
 }
 
-void CFramelessWindow::Update()
-{
-	QString text = QString("#CFramelessWindow_contentWidget{border-radius:%1px;background:rgba(%2,%3,%4,%5);}")
-		.arg(m_d->m_widgetRadius)
-		.arg(m_d->m_backgroundColor.red())
-		.arg(m_d->m_backgroundColor.green())
-		.arg(m_d->m_backgroundColor.blue())
-		.arg(m_d->m_backgroundColor.alpha());
-	m_d->m_contentWidget->setStyleSheet(text);
-}

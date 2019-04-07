@@ -15,9 +15,7 @@
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMenuBar>
-#include <QtWidgets/QStatusBar>
-#include <QtWidgets/QToolBar>
+#include <QtWidgets/QPushButton>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -25,28 +23,20 @@ QT_BEGIN_NAMESPACE
 class Ui_CMainWindowClass
 {
 public:
-    QMenuBar *menuBar;
-    QToolBar *mainToolBar;
     QWidget *centralWidget;
-    QStatusBar *statusBar;
+    QPushButton *pushButton;
 
     void setupUi(QMainWindow *CMainWindowClass)
     {
         if (CMainWindowClass->objectName().isEmpty())
             CMainWindowClass->setObjectName(QStringLiteral("CMainWindowClass"));
-        CMainWindowClass->resize(600, 400);
-        menuBar = new QMenuBar(CMainWindowClass);
-        menuBar->setObjectName(QStringLiteral("menuBar"));
-        CMainWindowClass->setMenuBar(menuBar);
-        mainToolBar = new QToolBar(CMainWindowClass);
-        mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
-        CMainWindowClass->addToolBar(mainToolBar);
+        CMainWindowClass->resize(869, 455);
         centralWidget = new QWidget(CMainWindowClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
+        pushButton = new QPushButton(centralWidget);
+        pushButton->setObjectName(QStringLiteral("pushButton"));
+        pushButton->setGeometry(QRect(330, 200, 75, 23));
         CMainWindowClass->setCentralWidget(centralWidget);
-        statusBar = new QStatusBar(CMainWindowClass);
-        statusBar->setObjectName(QStringLiteral("statusBar"));
-        CMainWindowClass->setStatusBar(statusBar);
 
         retranslateUi(CMainWindowClass);
 
@@ -56,6 +46,7 @@ public:
     void retranslateUi(QMainWindow *CMainWindowClass)
     {
         CMainWindowClass->setWindowTitle(QApplication::translate("CMainWindowClass", "CMainWindow", 0));
+        pushButton->setText(QApplication::translate("CMainWindowClass", "PushButton", 0));
     } // retranslateUi
 
 };

@@ -9,8 +9,15 @@ class CFramelessWindow : public QWidget
 {
 	Q_OBJECT
 public:
-	CFramelessWindow(QWidget* contentWidget,QWidget* parent = 0);
+	CFramelessWindow(QWidget* parent = 0);
 	~CFramelessWindow();
+
+	int GetBlurRadius();
+	int GetWidgetRadius();
+	const QColor& GetShadowColor();
+	const QColor& GetBackgroundColor();
+	bool GetDragEnabled();
+	bool GetResizeEnabled();
 
 	void SetBlurRadius(int radius);
 	void SetWidgetRadius(int radius);
@@ -18,16 +25,13 @@ public:
 	void SetBackgroundColor(const QColor &color);
 	void SetDragEnabled(bool dragEnabled);
 	void SetResizeEnabled(bool resizeEnabled);
-
 protected:
 	void mousePressEvent(QMouseEvent *event);
 	void mouseMoveEvent(QMouseEvent *event);
 	void mouseReleaseEvent(QMouseEvent *event);
-	bool eventFilter(QObject *watched, QEvent *event);
+	void paintEvent(QPaintEvent *event);
 private:
 	int		GetPosType(const QPoint& pt);
-	void    Update();
-
 private:
 	CFramelessWindowPrivate* m_d;
 };

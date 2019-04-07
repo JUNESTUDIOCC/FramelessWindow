@@ -3,6 +3,7 @@
 #include <QtWidgets/QMainWindow>
 #include "ui_CMainWindow.h"
 
+class CPopupWidget;
 class CMainWindow : public QMainWindow
 {
 	Q_OBJECT
@@ -10,6 +11,14 @@ class CMainWindow : public QMainWindow
 public:
 	CMainWindow(QWidget *parent = Q_NULLPTR);
 
+
+protected slots:
+void on_btn();
+
+protected:
+	void paintEvent(QPaintEvent *event);
+
 private:
 	Ui::CMainWindowClass ui;
+	CPopupWidget*	m_pPop;
 };
